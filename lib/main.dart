@@ -1,13 +1,9 @@
 import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 import 'dart:async';
-
-import './widget/custom_appbar.dart';
+import 'package:product_radar/widget/custom_appbar.dart';
 
 Future<List> fetchProducts() async {
   final response =
@@ -133,12 +129,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                RatingBar.builder(
-                                  initialRating: double.parse(snapshot
+                                RatingBarIndicator(
+                                  rating: double.parse(snapshot
                                       .data?[index]["product"]["rating"]),
-                                  minRating: 1,
                                   direction: Axis.horizontal,
-                                  allowHalfRating: true,
                                   itemCount: 5,
                                   itemSize: 25.0,
                                   itemPadding: const EdgeInsets.symmetric(
@@ -147,9 +141,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                     Icons.star,
                                     color: Colors.amber,
                                   ),
-                                  onRatingUpdate: (rating) {
-                                    print(rating);
-                                  },
                                 ),
                               ],
                             ),
