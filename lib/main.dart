@@ -1,7 +1,28 @@
-
 import 'package:flutter/material.dart';
 import 'package:product_radar/sign-up.dart';
 import 'package:http/http.dart' as http;
+
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'package:product_radar/widget/custom_appbar.dart';
+
+Future<List> fetchProducts() async {
+  final response =
+      await http.get(Uri.parse('http://10.130.56.28/joen/api/product'));
+
+  // If the server did return a 200 OK response
+  if (response.statusCode == 200) {
+    // return response as json
+    return json.decode(response.body)["data"];
+  } else {
+    // If the server did not return a 200 OK response
+    // then throw an exception
+    throw Exception('Failed to load album');
+  }
+}
 
 void main() {
   runApp(const MyApp());
@@ -18,8 +39,22 @@ class MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyHome(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        // This is the theme of your application.
+        //
+        // Try running your application with "flutter run". You'll see the
+        // application has a blue toolbar. Then, without quitting the app, try
+        // changing the primarySwatch below to Colors.green and then invoke
+        // "hot reload" (press "r" in the console where you ran "flutter run",
+        // or simply save your changes to "hot reload" in a Flutter IDE).
+        // Notice that the counter didn't reset back to zero; the application
+        // is not restarted.
+        primarySwatch: Colors.blue,
+      ),
+      home: const MyHome(),
     );
   }
 
@@ -37,43 +72,88 @@ class MyHome extends StatefulWidget {
 }
 
 class MyHomeState extends State<MyHome> {
+  get orientation => null;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('This is my very coll app ☻')),
-      body: GridView.count(
-        // Create a grid with 2 columns. If you change the scrollDirection to
-        // horizontal, this produces 2 rows.
-        crossAxisCount: 2,
-        // Generate 100 widgets that display their index in the List.
-        children: List.generate(100, (index) {
-          return Card(
-            // clipBehavior is necessary because, without it, the InkWell's animation
-            // will extend beyond the rounded edges of the [Card] (see https://github.com/flutter/flutter/issues/109776)
-            // This comes with a small performance cost, and you should not set [clipBehavior]
-            // unless you need it.
-            clipBehavior: Clip.hardEdge,
-            child: InkWell(
-              splashColor: Colors.blue.withAlpha(30),
-              onTap: () async {
-                debugPrint('Card tapped.');
-                // Future<http.Response> fetchAlbum() {
-                //   return http.get(Uri.parse('http://10.130.56.36/joen/api/product'));
-                // }
-                // var response = await fetchAlbum();
-                // debugPrint(response.body);
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => SignupPage(),
-                ));
-              },
-              child: const SizedBox(
-                width: 300,
-                height: 100,
-                child: Text('A card that can be tapped'),
-              ),
-            ),
-          );
-        }),
+      appBar: CustomAppBar(),
+      body: Center(
+        child: FutureBuilder<List>(
+          future: fetchProducts(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return GridView.builder(
+                  itemCount: snapshot.data?.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 5.0,
+                    mainAxisSpacing: 5.0,
+                  ),
+                  itemBuilder: (context, index) {
+                    return Card(
+                      child: Container(
+                        height: 500,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20)),
+                        margin: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(5),
+                        child: Stack(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Expanded(
+                                  child: Image.network(
+                                    snapshot.data?[index]["product"]["image"],
+                                    fit: BoxFit.contain,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        color: Colors.red,
+                                        alignment: Alignment.center,
+                                        child: const Text(
+                                          'Whoops!',
+                                          style: TextStyle(fontSize: 30),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                                Text(
+                                  snapshot.data?[index]["product"]["name"],
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                RatingBarIndicator(
+                                  rating: double.parse(snapshot.data?[index]
+                                      ["product"]["rating"]),
+                                  direction: Axis.horizontal,
+                                  itemCount: 5,
+                                  itemSize: 25.0,
+                                  itemPadding: const EdgeInsets.symmetric(
+                                      horizontal: 4.0),
+                                  itemBuilder: (context, _) => const Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  });
+            } else if (snapshot.hasError) {
+              return Text("${snapshot.error}");
+            }
+
+            // By default, show a loading spinner.
+            return const CircularProgressIndicator();
+          },
+        ),
       ),
     );
   }
