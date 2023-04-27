@@ -43,16 +43,7 @@ class MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.red,
       ),
       home: const MyHome(),
     );
@@ -78,82 +69,92 @@ class MyHomeState extends State<MyHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(),
-      body: Center(
-        child: FutureBuilder<List>(
-          future: fetchProducts(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return GridView.builder(
-                  itemCount: snapshot.data?.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 5.0,
-                    mainAxisSpacing: 5.0,
-                  ),
-                  itemBuilder: (context, index) {
-                    return Card(
-                      child: Container(
-                        height: 500,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20)),
-                        margin: const EdgeInsets.all(5),
-                        padding: const EdgeInsets.all(5),
-                        child: Stack(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Expanded(
-                                  child: Image.network(
-                                    snapshot.data?[index]["product"]["image"],
-                                    fit: BoxFit.contain,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Container(
-                                        color: Colors.red,
-                                        alignment: Alignment.center,
-                                        child: const Text(
-                                          'Whoops!',
-                                          style: TextStyle(fontSize: 30),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                                Text(
-                                  snapshot.data?[index]["product"]["name"],
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                RatingBarIndicator(
-                                  rating: double.parse(snapshot.data?[index]
-                                      ["product"]["rating"]),
-                                  direction: Axis.horizontal,
-                                  itemCount: 5,
-                                  itemSize: 25.0,
-                                  itemPadding: const EdgeInsets.symmetric(
-                                      horizontal: 4.0),
-                                  itemBuilder: (context, _) => const Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  });
-            } else if (snapshot.hasError) {
-              return Text("${snapshot.error}");
-            }
-
-            // By default, show a loading spinner.
-            return const CircularProgressIndicator();
-          },
-        ),
+//       body: Center(
+//         child: FutureBuilder<List>(
+//           future: fetchProducts(),
+//           builder: (context, snapshot) {
+//             if (snapshot.hasData) {
+//               return GridView.builder(
+//                   itemCount: snapshot.data?.length,
+//                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+//                     crossAxisCount: 2,
+//                     crossAxisSpacing: 5.0,
+//                     mainAxisSpacing: 5.0,
+//                   ),
+//                   itemBuilder: (context, index) {
+//                     return Card(
+//                       child: Container(
+//                         height: 500,
+//                         decoration: BoxDecoration(
+//                             borderRadius: BorderRadius.circular(20)),
+//                         margin: const EdgeInsets.all(5),
+//                         padding: const EdgeInsets.all(5),
+//                         child: Stack(
+//                           children: [
+//                             Column(
+//                               crossAxisAlignment: CrossAxisAlignment.stretch,
+//                               children: [
+//                                 Expanded(
+//                                   child: Image.network(
+//                                     snapshot.data?[index]["product"]["image"],
+//                                     fit: BoxFit.contain,
+//                                     errorBuilder: (context, error, stackTrace) {
+//                                       return Container(
+//                                         color: Colors.red,
+//                                         alignment: Alignment.center,
+//                                         child: const Text(
+//                                           'Whoops!',
+//                                           style: TextStyle(fontSize: 30),
+//                                         ),
+//                                       );
+//                                     },
+//                                   ),
+//                                 ),
+//                                 Text(
+//                                   snapshot.data?[index]["product"]["name"],
+//                                   style: const TextStyle(
+//                                     fontSize: 18,
+//                                     fontWeight: FontWeight.bold,
+//                                   ),
+//                                 ),
+//                                 RatingBarIndicator(
+//                                   rating: double.parse(snapshot.data?[index]
+//                                       ["product"]["rating"]),
+//                                   direction: Axis.horizontal,
+//                                   itemCount: 5,
+//                                   itemSize: 25.0,
+//                                   itemPadding: const EdgeInsets.symmetric(
+//                                       horizontal: 4.0),
+//                                   itemBuilder: (context, _) => const Icon(
+//                                     Icons.star,
+//                                     color: Colors.amber,
+//                                   ),
+//                                 ),
+//                               ],
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                     );
+//                   });
+//             } else if (snapshot.hasError) {
+//               return Text("${snapshot.error}");
+//             }
+//
+//             // By default, show a loading spinner.
+//             return const CircularProgressIndicator();
+//           },
+//         ),
+//       appBar: AppBar(title: const Text('This is my very coll app ☻'), backgroundColor: Colors.red,),
+      body: ElevatedButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const SignupPage(),
+            ),
+          );
+        },
+        child: const Text("Sign Up"),
       ),
     );
   }

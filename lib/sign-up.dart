@@ -17,11 +17,6 @@ class SignupPage extends StatefulWidget {
   State<SignupPage> createState() => _SignupPageState();
 }
 
-bool goodPassword = false;
-bool matchingPassword = false;
-bool username = false;
-bool allPassed = false;
-
 String password = "";
 
 class _SignupPageState extends State<SignupPage> {
@@ -29,7 +24,12 @@ class _SignupPageState extends State<SignupPage> {
 
   ///Passing a key to access the validate function
   final GlobalKey<FlutterPwValidatorState> validatorKey =
-  GlobalKey<FlutterPwValidatorState>();
+      GlobalKey<FlutterPwValidatorState>();
+
+  bool goodPassword = false;
+  bool matchingPassword = false;
+  bool usernameEntered = false;
+  bool allPassed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -53,10 +53,7 @@ class _SignupPageState extends State<SignupPage> {
       ),
       body: SafeArea(
         child: SizedBox(
-          height: MediaQuery
-              .of(context)
-              .size
-              .height,
+          height: MediaQuery.of(context).size.height,
           width: double.infinity,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -92,9 +89,121 @@ class _SignupPageState extends State<SignupPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 40),
                     child: Column(
                       children: [
-                        makeInput(label: "Username"),
-                        passwordInput(passwordController, validatorKey),
-                        makeInput(label: "Confirm Password", obscureText: true),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            TextField(
+                                controller: textController,
+                                decoration: InputDecoration(
+                                  hintText: "Username",
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 0, horizontal: 10),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Colors.grey[400]!,
+                                    ),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.grey[400]!),
+                                  ),
+                                ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    usernameEntered =
+                                        value.isNotEmpty ? true : false;
+                                    checkIfAllGood();
+                                  });
+                                }),
+                            const SizedBox(
+                              height: 30,
+                            )
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                          child: TextField(
+                            controller: passwordController,
+                            obscureText: false,
+                            decoration: InputDecoration(
+                              hintText: "Password",
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 10),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey[400]!,
+                                ),
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.grey[400]!),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        FlutterPwValidator(
+                          key: validatorKey,
+                          controller: passwordController,
+                          minLength: 8,
+                          uppercaseCharCount: 1,
+                          numericCharCount: 2,
+                          specialCharCount: 1,
+                          normalCharCount: 3,
+                          width: 400,
+                          height: 150,
+                          onSuccess: () {
+                            setState(() {
+                              goodPassword = true;
+                              checkIfAllGood();
+                            });
+                          },
+                          onFail: () {
+                            setState(() {
+                              goodPassword = false;
+                              checkIfAllGood();
+                            });
+                          },
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            TextField(
+                                obscureText: false,
+                                decoration: InputDecoration(
+                                  hintText: "Confirm password",
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 0, horizontal: 10),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Colors.grey[400]!,
+                                    ),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.grey[400]!),
+                                  ),
+                                ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    matchingPassword =
+                                        passwordController.text == value;
+                                    checkIfAllGood();
+                                  });
+                                }),
+                            const SizedBox(
+                              height: 30,
+                            )
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -114,7 +223,14 @@ class _SignupPageState extends State<SignupPage> {
                       child: MaterialButton(
                         minWidth: double.infinity,
                         height: 60,
-                        onPressed: allPassed == true ? createAccount() : null,
+                        onPressed: allPassed
+                            ? () async {
+                                createAccount().then((response) {
+                                  debugPrint(response.body);
+                                  Navigator.pop(context);
+                                });
+                              }
+                            : null,
                         color: Colors.redAccent,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(40),
@@ -157,14 +273,28 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
-  /*Future<http.Response>*/
-  createAccount() {
+  checkIfAllGood() {
+    if (goodPassword && matchingPassword && usernameEntered) {
+      setState(() {
+        allPassed = true;
+      });
+    } else {
+      setState(() {
+        allPassed = false;
+      });
+    }
+    debugPrint(allPassed.toString());
+  }
+
+  Future<http.Response> createAccount() {
     final password = passwordController.text;
     final username = textController.text;
+
     return http.post(
-      Uri.parse('${api.getApiBaseUrl()}duus/register'),
+      Uri.parse('${api.getBaseUrl()}/duus/api/auth/register'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json'
       },
       body: jsonEncode(<String, String>{
         'username': username,
@@ -172,87 +302,4 @@ class _SignupPageState extends State<SignupPage> {
       }),
     );
   }
-}
-
-Widget passwordInput(TextEditingController passwordController,
-    GlobalKey<FlutterPwValidatorState> validatorKey) {
-  return Column(children: [
-    Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 2.0),
-      child: TextField(
-        controller: passwordController,
-        decoration: const InputDecoration(
-          hintText: "Password",
-          border: OutlineInputBorder(
-            borderSide: BorderSide(),
-          ),
-        ),
-      ),
-    ),
-    const SizedBox(
-      height: 5,
-    ),
-    FlutterPwValidator(
-      key: validatorKey,
-      controller: passwordController,
-      minLength: 8,
-      uppercaseCharCount: 2,
-      numericCharCount: 3,
-      specialCharCount: 1,
-      normalCharCount: 3,
-      width: 400,
-      height: 150,
-      onSuccess: () {
-        if (kDebugMode) {
-          print("MATCHED");
-        }
-        goodPassword = true;
-        password = passwordController.text;
-      },
-      onFail: () {
-        if (kDebugMode) {
-          print("NOT MATCHED");
-        }
-        goodPassword = false;
-        password = "";
-      },
-    ),
-  ]);
-}
-
-Widget makeInput({label, obscureText = false}) {
-  matchingPassword(String passwordToCheck) {
-    if (password == passwordToCheck) {
-
-    }
-  }
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const SizedBox(
-        height: 10,
-      ),
-      TextField(
-        controller: obscureText ? null : textController,
-        obscureText: obscureText,
-        decoration: InputDecoration(
-          hintText: label,
-          contentPadding:
-          const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.grey[400]!,
-            ),
-          ),
-          border: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey[400]!),
-          ),
-        ),
-        // onChanged: obscureText ?matchingPassword(""):username=true,
-      ),
-      const SizedBox(
-        height: 30,
-      )
-    ],
-  );
 }
