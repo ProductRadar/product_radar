@@ -4,11 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:product_radar/api_url_lib.dart' as api;
-
-// Create a text controller and use it to retrieve the current value
-// of the TextField.
-final textController = TextEditingController();
+import 'package:product_radar/bin/api/api_lib.dart' as api;
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -17,15 +13,18 @@ class SignupPage extends StatefulWidget {
   State<SignupPage> createState() => _SignupPageState();
 }
 
-String password = "";
-
 class _SignupPageState extends State<SignupPage> {
+  // Controller for the username
+  final textController = TextEditingController();
+
+  // Controller for the password
   final TextEditingController passwordController = TextEditingController();
 
-  ///Passing a key to access the validate function
+  /// Passing a key to access the validate function
   final GlobalKey<FlutterPwValidatorState> validatorKey =
       GlobalKey<FlutterPwValidatorState>();
 
+  // Booleans used to validate input
   bool goodPassword = false;
   bool matchingPassword = false;
   bool usernameEntered = false;
@@ -127,7 +126,7 @@ class _SignupPageState extends State<SignupPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 2.0),
                           child: TextField(
                             controller: passwordController,
-                            obscureText: false,
+                            obscureText: true,
                             decoration: InputDecoration(
                               hintText: "Password",
                               contentPadding: const EdgeInsets.symmetric(
@@ -177,7 +176,7 @@ class _SignupPageState extends State<SignupPage> {
                               height: 10,
                             ),
                             TextField(
-                                obscureText: false,
+                                obscureText: true,
                                 decoration: InputDecoration(
                                   hintText: "Confirm password",
                                   contentPadding: const EdgeInsets.symmetric(
@@ -194,6 +193,7 @@ class _SignupPageState extends State<SignupPage> {
                                 ),
                                 onChanged: (value) {
                                   setState(() {
+                                    // Checks if the password match
                                     matchingPassword =
                                         passwordController.text == value;
                                     checkIfAllGood();
@@ -223,10 +223,24 @@ class _SignupPageState extends State<SignupPage> {
                       child: MaterialButton(
                         minWidth: double.infinity,
                         height: 60,
+                        // If all checks have passed, the enable button
                         onPressed: allPassed
                             ? () async {
-                                createAccount().then((response) {
-                                  debugPrint(response.body);
+                                // Get the entered password and username
+                                final password = passwordController.text;
+                                final username = textController.text;
+                                // Creates an account and then waits for a response
+                                createAccount(username, password)
+                                    .then((response) {
+                                  // Maps the JSON data
+                                  Map<String, dynamic> parsed =
+                                      jsonDecode(response.body);
+                                  // Uses API library to store token
+                                  api.storeToken(parsed['access_token']);
+                                  // Uses the API library to store the login info
+                                  api.storeLoginInfo(username, password);
+
+                                  // Navigate to previous page
                                   Navigator.pop(context);
                                 });
                               }
@@ -254,6 +268,7 @@ class _SignupPageState extends State<SignupPage> {
                       const Text("Already have an account? "),
                       TextButton(
                         onPressed: () {
+                          // TODO: Change to the login screen when added
                           Navigator.pop(context);
                         },
                         child: const Text(
@@ -273,6 +288,9 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
+  /// Checks if all checks are true
+  ///
+  /// If all checks are passed the allPassed is set to [true] else false
   checkIfAllGood() {
     if (goodPassword && matchingPassword && usernameEntered) {
       setState(() {
@@ -283,15 +301,21 @@ class _SignupPageState extends State<SignupPage> {
         allPassed = false;
       });
     }
-    debugPrint(allPassed.toString());
   }
 
-  Future<http.Response> createAccount() {
-    final password = passwordController.text;
-    final username = textController.text;
+  /// Creates an account with given credentials
+  Future<http.Response> createAccount(String username, String password) {
+    var url = "";
+    // If debug mode is active, use the dev path.
+    if (kDebugMode) {
+      url = '${api.getBaseUrl()}/duus/api/auth/register';
+    } else {
+      url = '${api.getBaseUrl()}/api/auth/register';
+    }
 
+    // Creates and posts the request.
     return http.post(
-      Uri.parse('${api.getBaseUrl()}/duus/api/auth/register'),
+      Uri.parse(url),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': 'application/json'
