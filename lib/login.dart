@@ -1,34 +1,28 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:product_radar/bin/api/api_lib.dart' as api;
+import 'package:product_radar/sign_up.dart';
 
-import 'login.dart';
+// Create a text controller and use it to retrieve the current value
+// of the TextField.
+final textController = TextEditingController();
 
-class SignupPage extends StatefulWidget {
-  const SignupPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<SignupPage> createState() => _SignupPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
-  // Controller for the username
-  final textController = TextEditingController();
+String password = "";
 
-  // Controller for the password
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
 
-  /// Passing a key to access the validate function
-  final GlobalKey<FlutterPwValidatorState> validatorKey =
-      GlobalKey<FlutterPwValidatorState>();
-
-  // Booleans used to validate input
-  bool goodPassword = false;
-  bool matchingPassword = false;
+  bool passwordEntered = false;
   bool usernameEntered = false;
   bool allPassed = false;
 
@@ -65,7 +59,7 @@ class _SignupPageState extends State<SignupPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       const Text(
-                        "Sign up",
+                        "Login",
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
@@ -75,7 +69,7 @@ class _SignupPageState extends State<SignupPage> {
                         height: 20,
                       ),
                       Text(
-                        "Create an Account, Its free",
+                        "Login and start rating products",
                         style: TextStyle(
                           fontSize: 15,
                           color: Colors.grey[700],
@@ -116,8 +110,8 @@ class _SignupPageState extends State<SignupPage> {
                                   setState(() {
                                     usernameEntered =
                                         value.isNotEmpty ? true : false;
-                                    checkIfAllGood();
                                   });
+                                  checkIfAllGood();
                                 }),
                             const SizedBox(
                               height: 30,
@@ -127,84 +121,32 @@ class _SignupPageState extends State<SignupPage> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 2.0),
                           child: TextField(
-                            controller: passwordController,
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              hintText: "Password",
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 10),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey[400]!,
+                              controller: passwordController,
+                              obscureText: true,
+                              decoration: InputDecoration(
+                                hintText: "Password",
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 10),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.grey[400]!,
+                                  ),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey[400]!),
                                 ),
                               ),
-                              border: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey[400]!),
-                              ),
-                            ),
-                          ),
+                              onChanged: (value) {
+                                setState(() {
+                                  passwordEntered =
+                                      value.isNotEmpty ? true : false;
+                                });
+                                checkIfAllGood();
+                              }),
                         ),
                         const SizedBox(
-                          height: 5,
-                        ),
-                        FlutterPwValidator(
-                          key: validatorKey,
-                          controller: passwordController,
-                          minLength: 8,
-                          uppercaseCharCount: 1,
-                          numericCharCount: 2,
-                          specialCharCount: 1,
-                          normalCharCount: 3,
-                          width: 400,
-                          height: 150,
-                          onSuccess: () {
-                            setState(() {
-                              goodPassword = true;
-                              checkIfAllGood();
-                            });
-                          },
-                          onFail: () {
-                            setState(() {
-                              goodPassword = false;
-                              checkIfAllGood();
-                            });
-                          },
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            TextField(
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                  hintText: "Confirm password",
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 0, horizontal: 10),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.grey[400]!,
-                                    ),
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.grey[400]!),
-                                  ),
-                                ),
-                                onChanged: (value) {
-                                  setState(() {
-                                    // Checks if the password match
-                                    matchingPassword =
-                                        passwordController.text == value;
-                                    checkIfAllGood();
-                                  });
-                                }),
-                            const SizedBox(
-                              height: 30,
-                            )
-                          ],
+                          height: 30,
                         ),
                       ],
                     ),
@@ -224,24 +166,10 @@ class _SignupPageState extends State<SignupPage> {
                       child: MaterialButton(
                         minWidth: double.infinity,
                         height: 60,
-                        // If all checks have passed, the enable button
                         onPressed: allPassed
                             ? () async {
-                                // Get the entered password and username
-                                final password = passwordController.text;
-                                final username = textController.text;
-                                // Creates an account and then waits for a response
-                                createAccount(username, password)
-                                    .then((response) {
-                                  // Maps the JSON data
-                                  Map<String, dynamic> parsed =
-                                      jsonDecode(response.body);
-                                  // Uses API library to store token
-                                  api.storeToken(parsed['access_token']);
-                                  // Uses the API library to store the login info
-                                  api.storeLoginInfo(username, password);
-
-                                  // Navigate to previous page
+                                login().then((response) {
+                                  debugPrint(response.body);
                                   Navigator.pop(context);
                                 });
                               }
@@ -251,7 +179,7 @@ class _SignupPageState extends State<SignupPage> {
                           borderRadius: BorderRadius.circular(40),
                         ),
                         child: const Text(
-                          "Sign Up",
+                          "Login",
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 16,
@@ -266,17 +194,17 @@ class _SignupPageState extends State<SignupPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Already have an account? "),
+                      const Text("Don't have an account? "),
                       TextButton(
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => const LoginPage(),
+                              builder: (context) => const SignupPage(),
                             ),
                           );
                         },
                         child: const Text(
-                          "Login",
+                          "Sign Up",
                           style: TextStyle(
                               fontWeight: FontWeight.w600, fontSize: 18),
                         ),
@@ -292,11 +220,8 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
-  /// Checks if all checks are true
-  ///
-  /// If all checks are passed the allPassed is set to [true] else false
   checkIfAllGood() {
-    if (goodPassword && matchingPassword && usernameEntered) {
+    if (passwordEntered && usernameEntered) {
       setState(() {
         allPassed = true;
       });
@@ -305,19 +230,21 @@ class _SignupPageState extends State<SignupPage> {
         allPassed = false;
       });
     }
+    debugPrint(allPassed.toString());
   }
 
-  /// Creates an account with given credentials
-  Future<http.Response> createAccount(String username, String password) {
+  Future<http.Response> login() {
+    final password = passwordController.text;
+    final username = textController.text;
+
     var url = "";
     // If debug mode is active, use the dev path.
     if (kDebugMode) {
-      url = '${api.getBaseUrl()}/duus/api/auth/register';
+      url = '${api.getBaseUrl()}/joen/api/auth/login';
     } else {
-      url = '${api.getBaseUrl()}/api/auth/register';
+      url = '${api.getBaseUrl()}/api/auth/login';
     }
 
-    // Creates and posts the request.
     return http.post(
       Uri.parse(url),
       headers: <String, String>{
