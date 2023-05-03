@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:product_radar/bin/api/api_lib.dart' as api;
-import 'package:product_radar/sign_up.dart';
 import 'package:http/http.dart' as http;
 
 import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:product_radar/widget/custom_appbar.dart';
+import 'package:product_radar/widget/custom_drawer.dart';
 
 Future<List> fetchProducts() async {
   final response =
@@ -70,95 +67,7 @@ class MyHomeState extends State<MyHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(),
-      //   body: Center(
-      //     child: FutureBuilder<List>(
-      //       future: fetchProducts(),
-      //       builder: (context, snapshot) {
-      //         if (snapshot.hasData) {
-      //           return GridView.builder(
-      //               itemCount: snapshot.data?.length,
-      //               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      //                 crossAxisCount: 2,
-      //                 crossAxisSpacing: 5.0,
-      //                 mainAxisSpacing: 5.0,
-      //               ),
-      //               itemBuilder: (context, index) {
-      //                 return Card(
-      //                   child: Container(
-      //                     height: 500,
-      //                     decoration: BoxDecoration(
-      //                         borderRadius: BorderRadius.circular(20)),
-      //                     margin: const EdgeInsets.all(5),
-      //                     padding: const EdgeInsets.all(5),
-      //                     child: Stack(
-      //                       children: [
-      //                         Column(
-      //                           crossAxisAlignment: CrossAxisAlignment.stretch,
-      //                           children: [
-      //                             Expanded(
-      //                               child: Image.network(
-      //                                 snapshot.data?[index]["product"]["image"],
-      //                                 fit: BoxFit.contain,
-      //                                 errorBuilder: (context, error, stackTrace) {
-      //                                   return Container(
-      //                                     color: Colors.red,
-      //                                     alignment: Alignment.center,
-      //                                     child: const Text(
-      //                                       'Whoops!',
-      //                                       style: TextStyle(fontSize: 30),
-      //                                     ),
-      //                                   );
-      //                                 },
-      //                               ),
-      //                             ),
-      //                             Text(
-      //                               snapshot.data?[index]["product"]["name"],
-      //                               style: const TextStyle(
-      //                                 fontSize: 18,
-      //                                 fontWeight: FontWeight.bold,
-      //                               ),
-      //                             ),
-      //                             RatingBarIndicator(
-      //                               rating: double.parse(snapshot.data?[index]
-      //                                   ["product"]["rating"]),
-      //                               direction: Axis.horizontal,
-      //                               itemCount: 5,
-      //                               itemSize: 25.0,
-      //                               itemPadding: const EdgeInsets.symmetric(
-      //                                   horizontal: 4.0),
-      //                               itemBuilder: (context, _) => const Icon(
-      //                                 Icons.star,
-      //                                 color: Colors.amber,
-      //                               ),
-      //                             ),
-      //                           ],
-      //                         ),
-      //                       ],
-      //                     ),
-      //                   ),
-      //                 );
-      //               });
-      //         } else if (snapshot.hasError) {
-      //           return Text("${snapshot.error}");
-      //         }
-      //
-      //         // By default, show a loading spinner.
-      //         return const CircularProgressIndicator();
-      //       },
-      //     ),
-      //   ),
-      //   appBar: AppBar(title: const Text('This is my very coll app ☻'), backgroundColor: Colors.red,),
       body: Column(children: [
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const SignupPage(),
-              ),
-            );
-          },
-          child: const Text("Sign Up"),
-        ),
         ElevatedButton(
           onPressed: () async {
             Map<String, String> val = await api.getLoginInfo();
@@ -167,6 +76,7 @@ class MyHomeState extends State<MyHome> {
           child: const Text("Test storage"),
         ),
       ]),
+      drawer: CustomDrawer(),
     );
   }
 }

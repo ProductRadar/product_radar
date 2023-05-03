@@ -168,7 +168,19 @@ class _LoginPageState extends State<LoginPage> {
                         height: 60,
                         onPressed: allPassed
                             ? () async {
+                                // Get the entered password and username
+                                final password = passwordController.text;
+                                final username = textController.text;
+
                                 login().then((response) {
+                                  // Maps the JSON data
+                                  Map<String, dynamic> parsed =
+                                  jsonDecode(response.body);
+                                  // Uses API library to store token
+                                  api.storeToken(parsed['access_token']);
+                                  // Uses the API library to store the login info
+                                  api.storeLoginInfo(username, password);
+
                                   debugPrint(response.body);
                                   Navigator.pop(context);
                                 });
@@ -197,6 +209,7 @@ class _LoginPageState extends State<LoginPage> {
                       const Text("Don't have an account? "),
                       TextButton(
                         onPressed: () {
+                          api.isLoggedIn();
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => const SignupPage(),

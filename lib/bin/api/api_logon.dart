@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 // Create the storage
@@ -33,7 +31,14 @@ Future<Map<String, String>> getLoginInfo() async {
 Future<bool> isLoggedIn() async {
   String? value = await storage.read(key: "token");
   if (value != null) {
+    print("isLoggedIn Function: true");
     return true;
   }
+  print("isLoggedIn Function: false");
   return false;
+}
+
+/// Log user out
+Future logOut() async {
+  await storage.deleteAll();
 }
