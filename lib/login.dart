@@ -6,10 +6,6 @@ import 'dart:convert';
 import 'package:product_radar/bin/api/api_lib.dart' as api;
 import 'package:product_radar/sign_up.dart';
 
-// Create a text controller and use it to retrieve the current value
-// of the TextField.
-final textController = TextEditingController();
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -21,6 +17,7 @@ String password = "";
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
 
   bool passwordEntered = false;
   bool usernameEntered = false;
@@ -91,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                               height: 10,
                             ),
                             TextField(
-                                controller: textController,
+                                controller: usernameController,
                                 decoration: InputDecoration(
                                   hintText: "Username",
                                   contentPadding: const EdgeInsets.symmetric(
@@ -170,7 +167,7 @@ class _LoginPageState extends State<LoginPage> {
                             ? () async {
                                 // Get the entered password and username
                                 final password = passwordController.text;
-                                final username = textController.text;
+                                final username = usernameController.text;
 
                                 login().then((response) {
                                   // Maps the JSON data
@@ -182,6 +179,8 @@ class _LoginPageState extends State<LoginPage> {
                                   api.storeLoginInfo(username, password);
 
                                   debugPrint(response.body);
+
+
                                   Navigator.pop(context);
                                 });
                               }
@@ -248,7 +247,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<http.Response> login() {
     final password = passwordController.text;
-    final username = textController.text;
+    final username = usernameController.text;
 
     var url = "";
     // If debug mode is active, use the dev path.
