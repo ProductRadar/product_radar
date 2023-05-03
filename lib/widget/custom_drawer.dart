@@ -23,7 +23,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           future: api.isLoggedIn(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              print("Future Builder: ${snapshot.data}");
+              // If the user is logged in display this listview
               if (snapshot.data == true) {
                 return ListView(children: [
                   const ListTile(
@@ -40,11 +40,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     ),
                     title: const Text("Sign Out"),
                     onTap: () async {
+                      // Close Drawer
+                      Scaffold.of(context).closeDrawer();
+                      // Call api log out function
                       await api.logOut();
                     },
                   ),
                 ]);
-              } else {
+              } else { // Else display this listview
                 return ListView(
                   children: [
                     const ListTile(
@@ -84,43 +87,3 @@ class _CustomDrawerState extends State<CustomDrawer> {
   }
 }
 
-/*
-
-          children: [
-            const ListTile(
-              leading: Icon(
-                Icons.info,
-                color: Colors.red,
-              ),
-              title: Text("About Us"),
-            ),
-            if (isLoggedInVar)
-              ListTile(
-                leading: const Icon(
-                  Icons.login,
-                  color: Colors.red,
-                ),
-                title: const Text("Login"),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
-                  );
-                },
-              ),
-            if (!isLoggedInVar)
-              ListTile(
-                leading: const Icon(
-                  Icons.login,
-                  color: Colors.red,
-                ),
-                title: const Text("Logout"),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
-                  );
-                },
-              ),
-          ],
- */
