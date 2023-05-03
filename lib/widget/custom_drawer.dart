@@ -29,6 +29,20 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 return ListView(children: [
                   const ListTile(
                     leading: Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                    ),
+                    title: Text("Favorites"),
+                  ),
+                  const ListTile(
+                    leading: Icon(
+                      Icons.star,
+                      color: Colors.red,
+                    ),
+                    title: Text("Ratings"),
+                  ),
+                  const ListTile(
+                    leading: Icon(
                       Icons.info,
                       color: Colors.red,
                     ),
@@ -48,7 +62,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     },
                   ),
                 ]);
-              } else { // Else display this listview
+              } else // Else display this listview
+              {
                 return ListView(
                   children: [
                     const ListTile(
@@ -101,4 +116,3 @@ class _CustomDrawerState extends State<CustomDrawer> {
     );
   }
 }
-
