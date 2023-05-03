@@ -19,6 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
 
+  bool loginFail = false;
   bool passwordEntered = false;
   bool usernameEntered = false;
   bool allPassed = false;
@@ -74,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(
                         height: 30,
-                      )
+                      ),
                     ],
                   ),
                   Padding(
@@ -91,6 +92,9 @@ class _LoginPageState extends State<LoginPage> {
                                 controller: usernameController,
                                 decoration: InputDecoration(
                                   hintText: "Username",
+                                  errorText: loginFail
+                                      ? 'Login information is invalid'
+                                      : null,
                                   contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0, horizontal: 10),
                                   enabledBorder: OutlineInputBorder(
@@ -122,6 +126,9 @@ class _LoginPageState extends State<LoginPage> {
                               obscureText: true,
                               decoration: InputDecoration(
                                 hintText: "Password",
+                                errorText: loginFail
+                                    ? 'Login information is invalid'
+                                    : null,
                                 contentPadding: const EdgeInsets.symmetric(
                                     vertical: 0, horizontal: 10),
                                 enabledBorder: OutlineInputBorder(
@@ -172,16 +179,36 @@ class _LoginPageState extends State<LoginPage> {
                                 login().then((response) {
                                   // Maps the JSON data
                                   Map<String, dynamic> parsed =
-                                  jsonDecode(response.body);
-                                  // Uses API library to store token
-                                  api.storeToken(parsed['access_token']);
-                                  // Uses the API library to store the login info
-                                  api.storeLoginInfo(username, password);
+                                      jsonDecode(response.body);
 
                                   debugPrint(response.body);
 
+                                  // If the parsed data has the access token key
+                                  if (parsed['access_token'] != null) {
+                                    // make login fail false
+                                    loginFail = false;
 
-                                  Navigator.pop(context);
+                                    debugPrint("true");
+                                    // Uses API library to store token
+                                    api.storeToken(parsed['access_token']);
+                                    // Uses the API library to store the login info
+                                    api.storeLoginInfo(username, password);
+
+                                    // unfocus the textfield
+                                    FocusScope.of(context).unfocus();
+
+                                    // Navigate
+                                    Navigator.pop(context);
+                                  } else {
+                                    // Clear password
+                                    passwordController.clear();
+
+                                    // make login fail true;
+                                    loginFail = true;
+
+                                    // unfocus the textfield
+                                    FocusScope.of(context).unfocus();
+                                  }
                                 });
                               }
                             : null,
