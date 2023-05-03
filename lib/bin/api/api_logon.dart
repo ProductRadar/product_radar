@@ -40,5 +40,7 @@ Future<bool> isLoggedIn() async {
 
 /// Log user out
 Future logOut() async {
-  await storage.deleteAll();
+  await storage.delete(key: 'username');
+  await storage.delete(key: 'password');
+  await storage.delete(key: 'token');
 }

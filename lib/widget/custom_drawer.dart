@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:product_radar/bin/api/api_lib.dart' as api;
 
 import '../login.dart';
+import '../sign_up.dart';
 
 class CustomDrawer extends StatefulWidget {
   @override
@@ -56,6 +57,20 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         color: Colors.red,
                       ),
                       title: Text("About Us"),
+                    ),
+                    ListTile(
+                      leading: const Icon(
+                        Icons.app_registration,
+                        color: Colors.red,
+                      ),
+                      title: const Text("Sign Up"),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SignupPage()),
+                        );
+                      },
                     ),
                     ListTile(
                       leading: const Icon(
