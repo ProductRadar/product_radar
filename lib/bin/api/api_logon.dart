@@ -1,4 +1,11 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import 'api_url.dart' as api;
+import 'package:http/http.dart' as http;
 
 // Create the storage
 const storage = FlutterSecureStorage();
@@ -31,10 +38,10 @@ Future<Map<String, String>> getLoginInfo() async {
 Future<bool> isLoggedIn() async {
   String? value = await storage.read(key: "token");
   if (value != null) {
-    print("isLoggedIn Function: true");
+    debugPrint("isLoggedIn Function: true");
     return true;
   }
-  print("isLoggedIn Function: false");
+  debugPrint("isLoggedIn Function: false");
   return false;
 }
 
@@ -43,4 +50,28 @@ Future logOut() async {
   await storage.delete(key: 'username');
   await storage.delete(key: 'password');
   await storage.delete(key: 'token');
+}
+
+/// Log user in
+Future<http.Response> login(final username, final password) {
+
+  var url = "";
+  // If debug mode is active, use the dev path.
+  if (kDebugMode) {
+    url = '${api.getBaseUrl()}/joen/api/auth/login';
+  } else {
+    url = '${api.getBaseUrl()}/api/auth/login';
+  }
+
+  return http.post(
+    Uri.parse(url),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Accept': 'application/json'
+    },
+    body: jsonEncode(<String, String>{
+      'username': username,
+      'password': password,
+    }),
+  );
 }
