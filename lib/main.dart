@@ -65,7 +65,7 @@ class MyHomeState extends State<MyHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: const CustomAppBar(),
       body: Center(
         child: FutureBuilder<List>(
           future: fetchProducts(),
