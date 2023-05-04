@@ -2,18 +2,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({
-    Key? key,
-  }) : super(key: key);
-  
+  const CustomAppBar({super.key});
+
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(
-          statusBarColor: Colors.red,
-          statusBarIconBrightness: Brightness.dark,
-        )
-    );
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.red,
+      statusBarIconBrightness: Brightness.dark,
+    ));
     return SafeArea(
       child: Column(
         children: [
@@ -53,16 +49,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       Icons.search,
                       color: Colors.red,
                     ),
-                    onPressed: () {
-
-                    },
+                    onPressed: () {},
                   ),
                 ]),
               ),
             ),
           ),
         ],
-
       ),
     );
   }
