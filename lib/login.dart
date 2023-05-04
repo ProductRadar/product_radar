@@ -16,6 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
 
+  String errorMessage = "";
   bool loginFail = false;
   bool passwordEntered = false;
   bool usernameEntered = false;
@@ -90,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                                 decoration: InputDecoration(
                                   hintText: "Username",
                                   errorText: loginFail
-                                      ? 'Login information is invalid'
+                                      ? errorMessage
                                       : null,
                                   contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0, horizontal: 10),
@@ -202,6 +203,9 @@ class _LoginPageState extends State<LoginPage> {
 
                                     // make login fail true;
                                     loginFail = true;
+
+                                    // error message
+                                    errorMessage = parsed['message'];
 
                                     // unfocus the textfield
                                     FocusScope.of(context).unfocus();
