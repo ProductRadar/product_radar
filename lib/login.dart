@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:product_radar/bin/api/api_lib.dart' as api;
 import 'package:product_radar/sign_up.dart';
@@ -176,7 +175,7 @@ class _LoginPageState extends State<LoginPage> {
                                 final password = passwordController.text;
                                 final username = usernameController.text;
 
-                                login().then((response) {
+                                api.login(username, password).then((response) {
                                   // Maps the JSON data
                                   Map<String, dynamic> parsed =
                                       jsonDecode(response.body);
@@ -272,28 +271,4 @@ class _LoginPageState extends State<LoginPage> {
     debugPrint(allPassed.toString());
   }
 
-  Future<http.Response> login() {
-    final password = passwordController.text;
-    final username = usernameController.text;
-
-    var url = "";
-    // If debug mode is active, use the dev path.
-    if (kDebugMode) {
-      url = '${api.getBaseUrl()}/joen/api/auth/login';
-    } else {
-      url = '${api.getBaseUrl()}/api/auth/login';
-    }
-
-    return http.post(
-      Uri.parse(url),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Accept': 'application/json'
-      },
-      body: jsonEncode(<String, String>{
-        'username': username,
-        'password': password,
-      }),
-    );
-  }
 }
