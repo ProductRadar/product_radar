@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:product_radar/widget/custom_appbar.dart';
-
+import 'package:product_radar/widget/custom_drawer.dart';
 import 'package:product_radar/bin/product/product_lib.dart' as product;
 import 'package:product_radar/widget/product_details.dart';
 
@@ -175,6 +175,7 @@ class MyHomeState extends State<MyHome> {
           },
         ),
       ),
+      drawer: CustomDrawer(),
     );
   }
 }
