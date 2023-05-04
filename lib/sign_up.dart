@@ -1,8 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:product_radar/bin/api/api_lib.dart' as api;
 
@@ -21,6 +19,8 @@ class _SignupPageState extends State<SignupPage> {
 
   // Controller for the password
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController passwordConfirmController =
+      TextEditingController();
 
   /// Passing a key to access the validate function
   final GlobalKey<FlutterPwValidatorState> validatorKey =
@@ -31,6 +31,7 @@ class _SignupPageState extends State<SignupPage> {
   bool matchingPassword = false;
   bool usernameEntered = false;
   bool allPassed = false;
+  bool loginFail = false;
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +101,9 @@ class _SignupPageState extends State<SignupPage> {
                                 controller: textController,
                                 decoration: InputDecoration(
                                   hintText: "Username",
+                                  errorText: loginFail
+                                      ? 'Invalid information'
+                                      : null,
                                   contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0, horizontal: 10),
                                   enabledBorder: OutlineInputBorder(
@@ -143,6 +147,14 @@ class _SignupPageState extends State<SignupPage> {
                                     BorderSide(color: Colors.grey[400]!),
                               ),
                             ),
+                            onChanged: (value) {
+                              setState(() {
+                                // Checks if the password match
+                                matchingPassword =
+                                    passwordConfirmController.text == value;
+                                checkIfAllGood();
+                              });
+                            },
                           ),
                         ),
                         const SizedBox(
@@ -178,6 +190,7 @@ class _SignupPageState extends State<SignupPage> {
                               height: 10,
                             ),
                             TextField(
+                                controller: passwordConfirmController,
                                 obscureText: true,
                                 decoration: InputDecoration(
                                   hintText: "Confirm password",
@@ -231,19 +244,34 @@ class _SignupPageState extends State<SignupPage> {
                                 final password = passwordController.text;
                                 final username = textController.text;
                                 // Creates an account and then waits for a response
-                                createAccount(username, password)
-                                    .then((response) {
-                                  // Maps the JSON data
-                                  Map<String, dynamic> parsed =
-                                      jsonDecode(response.body);
-                                  // Uses API library to store token
-                                  api.storeToken(parsed['access_token']);
-                                  // Uses the API library to store the login info
-                                  api.storeLoginInfo(username, password);
+                                api.createAccount(username, password).then(
+                                  (response) {
+                                    // Maps the JSON data
+                                    Map<String, dynamic> parsed =
+                                        jsonDecode(response.body);
+                                    // Checks for the token, to determine, if the sign-up was successful
+                                    if (parsed['access_token'] != null) {
+                                      // Since creation was successful, loginFail shall be false
+                                      loginFail = false;
+                                      // Uses API library to store token
+                                      api.storeToken(parsed['access_token']);
+                                      // Uses the API library to store the login info
+                                      api.storeLoginInfo(username, password);
 
-                                  // Navigate to previous page
-                                  Navigator.pop(context);
-                                });
+                                      // Navigate to previous page
+                                      Navigator.pop(context);
+                                    } else {
+                                      // Clear password
+                                      passwordController.clear();
+
+                                      // Make login fail true, since the sign-up failed.
+                                      loginFail = true;
+
+                                      // Unfocus the textfield
+                                      FocusScope.of(context).unfocus();
+                                    }
+                                  },
+                                );
                               }
                             : null,
                         color: Colors.redAccent,
@@ -305,29 +333,5 @@ class _SignupPageState extends State<SignupPage> {
         allPassed = false;
       });
     }
-  }
-
-  /// Creates an account with given credentials
-  Future<http.Response> createAccount(String username, String password) {
-    var url = "";
-    // If debug mode is active, use the dev path.
-    if (kDebugMode) {
-      url = '${api.getBaseUrl()}/duus/api/auth/register';
-    } else {
-      url = '${api.getBaseUrl()}/api/auth/register';
-    }
-
-    // Creates and posts the request.
-    return http.post(
-      Uri.parse(url),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Accept': 'application/json'
-      },
-      body: jsonEncode(<String, String>{
-        'username': username,
-        'password': password,
-      }),
-    );
   }
 }

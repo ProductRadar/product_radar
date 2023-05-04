@@ -1,11 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
-
+import 'package:http/http.dart' as http;
+import 'api_url.dart' as api;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
-import 'api_url.dart' as api;
-import 'package:http/http.dart' as http;
 
 // Create the storage
 const storage = FlutterSecureStorage();
@@ -54,9 +53,27 @@ Future logOut() async {
 
 /// Log user in
 Future<http.Response> login(final username, final password) {
-
   var url = '${api.getApiBaseUrl()}/auth/login';
 
+  return http.post(
+    Uri.parse(url),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Accept': 'application/json'
+    },
+    body: jsonEncode(<String, String>{
+      'username': username,
+      'password': password,
+    }),
+  );
+}
+
+/// Creates an account with given credentials
+Future<http.Response> createAccount(String username, String password) {
+  var url = "";
+  url = '${api.getBaseUrl()}/api/auth/register';
+
+  // Creates and posts the request.
   return http.post(
     Uri.parse(url),
     headers: <String, String>{
