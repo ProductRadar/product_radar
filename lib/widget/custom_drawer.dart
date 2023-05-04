@@ -24,7 +24,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           future: api.isLoggedIn(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              // If the user is logged in display this listview
+              // If the user is logged in display this listview in drawer
               if (snapshot.data == true) {
                 return ListView(children: [
                   const ListTile(
@@ -62,7 +62,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     },
                   ),
                 ]);
-              } else // Else display this listview
+              } else // Else when not logged in, display this listview in drawer
               {
                 return ListView(
                   children: [
