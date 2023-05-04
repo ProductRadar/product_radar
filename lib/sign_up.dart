@@ -1,8 +1,7 @@
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:product_radar/bin/api/api_lib.dart' as api;
 
@@ -230,7 +229,7 @@ class _SignupPageState extends State<SignupPage> {
                                 final password = passwordController.text;
                                 final username = textController.text;
                                 // Creates an account and then waits for a response
-                                createAccount(username, password)
+                                api.createAccount(username, password)
                                     .then((response) {
                                   // Maps the JSON data
                                   Map<String, dynamic> parsed =
@@ -301,29 +300,5 @@ class _SignupPageState extends State<SignupPage> {
         allPassed = false;
       });
     }
-  }
-
-  /// Creates an account with given credentials
-  Future<http.Response> createAccount(String username, String password) {
-    var url = "";
-    // If debug mode is active, use the dev path.
-    if (kDebugMode) {
-      url = '${api.getBaseUrl()}/duus/api/auth/register';
-    } else {
-      url = '${api.getBaseUrl()}/api/auth/register';
-    }
-
-    // Creates and posts the request.
-    return http.post(
-      Uri.parse(url),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Accept': 'application/json'
-      },
-      body: jsonEncode(<String, String>{
-        'username': username,
-        'password': password,
-      }),
-    );
   }
 }
