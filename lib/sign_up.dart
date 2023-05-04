@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
@@ -18,6 +17,8 @@ class _SignupPageState extends State<SignupPage> {
 
   // Controller for the password
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController passwordConfirmController =
+      TextEditingController();
 
   /// Passing a key to access the validate function
   final GlobalKey<FlutterPwValidatorState> validatorKey =
@@ -140,6 +141,14 @@ class _SignupPageState extends State<SignupPage> {
                                     BorderSide(color: Colors.grey[400]!),
                               ),
                             ),
+                            onChanged: (value) {
+                              setState(() {
+                                // Checks if the password match
+                                matchingPassword =
+                                    passwordConfirmController.text == value;
+                                checkIfAllGood();
+                              });
+                            },
                           ),
                         ),
                         const SizedBox(
@@ -175,6 +184,7 @@ class _SignupPageState extends State<SignupPage> {
                               height: 10,
                             ),
                             TextField(
+                                controller: passwordConfirmController,
                                 obscureText: true,
                                 decoration: InputDecoration(
                                   hintText: "Confirm password",
@@ -229,7 +239,8 @@ class _SignupPageState extends State<SignupPage> {
                                 final password = passwordController.text;
                                 final username = textController.text;
                                 // Creates an account and then waits for a response
-                                api.createAccount(username, password)
+                                api
+                                    .createAccount(username, password)
                                     .then((response) {
                                   // Maps the JSON data
                                   Map<String, dynamic> parsed =
