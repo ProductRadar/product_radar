@@ -1,10 +1,10 @@
-
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'dart:async';
 import 'package:product_radar/widget/custom_appbar.dart';
+import 'package:product_radar/widget/custom_drawer.dart';
 
 Future<List> fetchProducts() async {
   final response =
@@ -143,6 +143,7 @@ class MyHomeState extends State<MyHome> {
           },
         ),
       ),
+      drawer: CustomDrawer(),
     );
   }
 }

@@ -1,9 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
+import 'api_url.dart' as api;
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
-import 'package:product_radar/bin/api/api_url.dart';
 
 // Create the storage
 const storage = FlutterSecureStorage();
@@ -36,15 +37,41 @@ Future<Map<String, String>> getLoginInfo() async {
 Future<bool> isLoggedIn() async {
   String? value = await storage.read(key: "token");
   if (value != null) {
+    debugPrint("isLoggedIn Function: true");
     return true;
   }
+  debugPrint("isLoggedIn Function: false");
   return false;
+}
+
+/// Log user out
+Future logOut() async {
+  await storage.delete(key: 'username');
+  await storage.delete(key: 'password');
+  await storage.delete(key: 'token');
+}
+
+/// Log user in
+Future<http.Response> login(final username, final password) {
+  var url = '${api.getApiBaseUrl()}/auth/login';
+
+  return http.post(
+    Uri.parse(url),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Accept': 'application/json'
+    },
+    body: jsonEncode(<String, String>{
+      'username': username,
+      'password': password,
+    }),
+  );
 }
 
 /// Creates an account with given credentials
 Future<http.Response> createAccount(String username, String password) {
   var url = "";
-    url = '${getBaseUrl()}/api/auth/register';
+  url = '${api.getBaseUrl()}/api/auth/register';
 
   // Creates and posts the request.
   return http.post(

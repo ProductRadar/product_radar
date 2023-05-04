@@ -4,6 +4,8 @@ import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'dart:convert';
 import 'package:product_radar/bin/api/api_lib.dart' as api;
 
+import 'login.dart';
+
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
 
@@ -223,7 +225,6 @@ class _SignupPageState extends State<SignupPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 40),
                     child: Container(
-                      padding: const EdgeInsets.only(top: 3, left: 3),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(40),
                         border: const Border(
@@ -296,8 +297,11 @@ class _SignupPageState extends State<SignupPage> {
                       const Text("Already have an account? "),
                       TextButton(
                         onPressed: () {
-                          // TODO: Change to the login screen when added
-                          Navigator.pop(context);
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const LoginPage(),
+                            ),
+                          );
                         },
                         child: const Text(
                           "Login",
