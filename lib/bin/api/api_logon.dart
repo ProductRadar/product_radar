@@ -55,13 +55,7 @@ Future logOut() async {
 /// Log user in
 Future<http.Response> login(final username, final password) {
 
-  var url = "";
-  // If debug mode is active, use the dev path.
-  if (kDebugMode) {
-    url = '${api.getBaseUrl()}/joen/api/auth/login';
-  } else {
-    url = '${api.getBaseUrl()}/api/auth/login';
-  }
+  var url = '${api.getApiBaseUrl()}/auth/login';
 
   return http.post(
     Uri.parse(url),
