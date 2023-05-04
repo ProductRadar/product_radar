@@ -29,6 +29,7 @@ class _SignupPageState extends State<SignupPage> {
   bool matchingPassword = false;
   bool usernameEntered = false;
   bool allPassed = false;
+  bool loginFail = false;
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +99,9 @@ class _SignupPageState extends State<SignupPage> {
                                 controller: textController,
                                 decoration: InputDecoration(
                                   hintText: "Username",
+                                  errorText: loginFail
+                                      ? 'Invalid information'
+                                      : null,
                                   contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0, horizontal: 10),
                                   enabledBorder: OutlineInputBorder(
@@ -239,20 +243,34 @@ class _SignupPageState extends State<SignupPage> {
                                 final password = passwordController.text;
                                 final username = textController.text;
                                 // Creates an account and then waits for a response
-                                api
-                                    .createAccount(username, password)
-                                    .then((response) {
-                                  // Maps the JSON data
-                                  Map<String, dynamic> parsed =
-                                      jsonDecode(response.body);
-                                  // Uses API library to store token
-                                  api.storeToken(parsed['access_token']);
-                                  // Uses the API library to store the login info
-                                  api.storeLoginInfo(username, password);
+                                api.createAccount(username, password).then(
+                                  (response) {
+                                    // Maps the JSON data
+                                    Map<String, dynamic> parsed =
+                                        jsonDecode(response.body);
+                                    // Checks for the token, to determine, if the sign-up was successful
+                                    if (parsed['access_token'] != null) {
+                                      // Since creation was successful, loginFail shall be false
+                                      loginFail = false;
+                                      // Uses API library to store token
+                                      api.storeToken(parsed['access_token']);
+                                      // Uses the API library to store the login info
+                                      api.storeLoginInfo(username, password);
 
-                                  // Navigate to previous page
-                                  Navigator.pop(context);
-                                });
+                                      // Navigate to previous page
+                                      Navigator.pop(context);
+                                    } else {
+                                      // Clear password
+                                      passwordController.clear();
+
+                                      // Make login fail true, since the sign-up failed.
+                                      loginFail = true;
+
+                                      // Unfocus the textfield
+                                      FocusScope.of(context).unfocus();
+                                    }
+                                  },
+                                );
                               }
                             : null,
                         color: Colors.redAccent,
