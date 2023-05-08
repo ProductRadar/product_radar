@@ -263,8 +263,6 @@ class _SignupPageState extends State<SignupPage> {
                                       // Navigate to previous page
                                       Navigator.pop(context);
                                     } else {
-                                      // Clear password
-                                      passwordController.clear();
 
                                       // Make login fail true, since the sign-up failed.
                                       loginFail = true;
