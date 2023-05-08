@@ -121,23 +121,6 @@ class MyHomeState extends State<MyHome> {
                                       },
                                     ),
                                   ),
-                                  // Expanded(
-                                  //   child: Image.network(
-                                  //     snapshot.data?[index]["product"]["image"],
-                                  //     fit: BoxFit.contain,
-                                  //     errorBuilder:
-                                  //         (context, error, stackTrace) {
-                                  //       return Container(
-                                  //         color: Colors.red,
-                                  //         alignment: Alignment.center,
-                                  //         child: const Text(
-                                  //           'Whoops!',
-                                  //           style: TextStyle(fontSize: 30),
-                                  //         ),
-                                  //       );
-                                  //     },
-                                  //   ),
-                                  // ),
                                   Text(
                                     snapshot.data?[index]["product"]["name"],
                                     style: const TextStyle(

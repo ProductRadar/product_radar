@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-
-import 'package:product_radar/widget/custom_appbar.dart';
 import 'package:product_radar/bin/product/product_lib.dart' as product;
+import 'package:product_radar/widget/favorite.dart';
+import 'package:product_radar/widget/rating.dart';
 
 class ProductDetail extends StatefulWidget {
   final int id;
+
   const ProductDetail({super.key, required this.id});
 
   @override
@@ -18,13 +18,15 @@ class ProductDetailState extends State<ProductDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: AppBar(
+        backgroundColor: Colors.red,
+      ),
       body: Center(
         child: FutureBuilder<Map<String, dynamic>>(
           future: product.getProduct(widget.id),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              Card(
+              return Card(
                 child: Container(
                   height: 500,
                   decoration:
@@ -52,26 +54,20 @@ class ProductDetailState extends State<ProductDetail> {
                               },
                             ),
                           ),
-                          Text(
-                            snapshot.data?["product"]["name"],
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                                snapshot.data?["product"]["name"],
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const Spacer(),
+                              const Favorite(),
+                            ],
                           ),
-                          RatingBarIndicator(
-                            rating: double.parse(
-                                snapshot.data?["product"]["rating"]),
-                            direction: Axis.horizontal,
-                            itemCount: 5,
-                            itemSize: 25.0,
-                            itemPadding:
-                                const EdgeInsets.symmetric(horizontal: 4.0),
-                            itemBuilder: (context, _) => const Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                            ),
-                          ),
+                          Rate(id: widget.id),
                         ],
                       ),
                     ],
