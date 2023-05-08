@@ -41,9 +41,13 @@ class _RateState extends State<Rate> {
         } else {
           return Row(
             children: [
-              const Text("Your rating: "),
+              const Text("Your rating: ",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),),
               FutureBuilder(
-                future: user.getFavoriteProduct(widget.id),
+                future: user.getRatedProduct(widget.id),
                 builder: ((context, snapshot) {
                   if (snapshot.data != null && snapshot.data!.isNotEmpty) {
                     return RatingBar.builder(
@@ -65,8 +69,7 @@ class _RateState extends State<Rate> {
                     );
                   } else {
                     return RatingBar.builder(
-                      initialRating:
-                      double.parse("0"),
+                      initialRating: double.parse("0"),
                       direction: Axis.horizontal,
                       itemCount: 5,
                       itemSize: 25.0,
