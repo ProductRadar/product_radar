@@ -9,12 +9,10 @@ class Favorites extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.red,
-          title: const Text("Favorites"),
-          leading: BackButton(
-            color: Colors.white,
-            onPressed: () => Navigator.of(context).pop(),
-          )),
+        backgroundColor: Colors.red,
+        title: const Text("Favorites"),
+        leading: const BackButton(),
+      ),
       body: const FavoriteProducts(),
       drawer: CustomDrawer(),
     );

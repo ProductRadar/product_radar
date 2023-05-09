@@ -11,10 +11,8 @@ class Ratings extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.red,
         title: const Text("Ratings"),
-          leading: BackButton(
-            color: Colors.white,
-            onPressed: () => Navigator.of(context).pop(),
-          )),
+        leading: const BackButton(),
+      ),
       body: const RatedProducts(),
       drawer: CustomDrawer(),
     );
