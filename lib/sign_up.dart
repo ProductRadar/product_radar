@@ -26,6 +26,8 @@ class _SignupPageState extends State<SignupPage> {
   final GlobalKey<FlutterPwValidatorState> validatorKey =
       GlobalKey<FlutterPwValidatorState>();
 
+  String errorMessage = "";
+
   // Booleans used to validate input
   bool goodPassword = false;
   bool matchingPassword = false;
@@ -102,7 +104,7 @@ class _SignupPageState extends State<SignupPage> {
                                 decoration: InputDecoration(
                                   hintText: "Username",
                                   errorText: loginFail
-                                      ? 'Invalid information'
+                                      ? errorMessage
                                       : null,
                                   contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0, horizontal: 10),
@@ -261,11 +263,12 @@ class _SignupPageState extends State<SignupPage> {
                                       // Navigate to previous page
                                       Navigator.pop(context);
                                     } else {
-                                      // Clear password
-                                      passwordController.clear();
 
                                       // Make login fail true, since the sign-up failed.
                                       loginFail = true;
+
+                                      // Update error message
+                                      errorMessage = parsed["message"];
 
                                       // Unfocus the textfield
                                       FocusScope.of(context).unfocus();
