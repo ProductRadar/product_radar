@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:product_radar/widget/custom_appbar.dart';
 import 'package:product_radar/widget/custom_drawer.dart';
-import 'package:product_radar/widget/load_products_by_rating.dart';
+import 'package:product_radar/widget/favorite_products.dart';
 
 class Favorites extends StatelessWidget {
   const Favorites({super.key});
@@ -10,7 +10,7 @@ class Favorites extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(),
-      body: const LoadProductsByRating(),
+      body: const FavoriteProducts(),
       drawer: CustomDrawer(),
     );
   }
