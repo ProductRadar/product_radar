@@ -1,25 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:async';
 import 'package:product_radar/widget/custom_appbar.dart';
 import 'package:product_radar/widget/custom_drawer.dart';
-
-Future<List> fetchProducts() async {
-  final response =
-      await http.get(Uri.parse('http://10.130.56.28/joen/api/product'));
-
-  // If the server did return a 200 OK response
-  if (response.statusCode == 200) {
-    // return response as json
-    return json.decode(response.body)["data"];
-  } else {
-    // If the server did not return a 200 OK response
-    // then throw an exception
-    throw Exception('Failed to load album');
-  }
-}
+import 'package:product_radar/bin/product/product_lib.dart' as product;
+import 'package:product_radar/widget/product_details.dart';
 
 void main() {
   runApp(const MyApp());
@@ -68,7 +52,7 @@ class MyHomeState extends State<MyHome> {
       appBar: const CustomAppBar(),
       body: Center(
         child: FutureBuilder<List>(
-          future: fetchProducts(),
+          future: product.fetchProducts(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return GridView.builder(
@@ -79,57 +63,88 @@ class MyHomeState extends State<MyHome> {
                     mainAxisSpacing: 5.0,
                   ),
                   itemBuilder: (context, index) {
-                    return Card(
-                      child: Container(
-                        height: 500,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20)),
-                        margin: const EdgeInsets.all(5),
-                        padding: const EdgeInsets.all(5),
-                        child: Stack(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Expanded(
-                                  child: Image.network(
-                                    snapshot.data?[index]["product"]["image"],
-                                    fit: BoxFit.contain,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Container(
-                                        color: Colors.red,
-                                        alignment: Alignment.center,
-                                        child: const Text(
-                                          'Whoops!',
-                                          style: TextStyle(fontSize: 30),
-                                        ),
-                                      );
-                                    },
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProductDetail(
+                                id: snapshot.data?[index]["product"]["id"]),
+                          ),
+                        );
+                      },
+                      child: Card(
+                        child: Container(
+                          height: 500,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20)),
+                          margin: const EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
+                          child: Stack(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Expanded(
+                                    child: Image.network(
+                                      snapshot.data?[index]["product"]["image"],
+                                      fit: BoxFit.contain,
+                                      loadingBuilder: (BuildContext context,
+                                          Widget child,
+                                          ImageChunkEvent? loadingProgress) {
+                                        if (loadingProgress == null) {
+                                          return child;
+                                        }
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            value: loadingProgress
+                                                        .expectedTotalBytes !=
+                                                    null
+                                                ? loadingProgress
+                                                        .cumulativeBytesLoaded /
+                                                    loadingProgress
+                                                        .expectedTotalBytes!
+                                                : null,
+                                          ),
+                                        );
+                                      },
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Container(
+                                          color: Colors.red,
+                                          alignment: Alignment.center,
+                                          child: const Text(
+                                            'Whoops!',
+                                            style: TextStyle(fontSize: 30),
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  snapshot.data?[index]["product"]["name"],
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                                  Text(
+                                    snapshot.data?[index]["product"]["name"],
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                RatingBarIndicator(
-                                  rating: double.parse(snapshot.data?[index]
-                                      ["product"]["rating"]),
-                                  direction: Axis.horizontal,
-                                  itemCount: 5,
-                                  itemSize: 25.0,
-                                  itemPadding: const EdgeInsets.symmetric(
-                                      horizontal: 4.0),
-                                  itemBuilder: (context, _) => const Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
+                                  RatingBarIndicator(
+                                    rating: double.parse(snapshot.data?[index]
+                                        ["product"]["rating"]),
+                                    direction: Axis.horizontal,
+                                    itemCount: 5,
+                                    itemSize: 25.0,
+                                    itemPadding: const EdgeInsets.symmetric(
+                                        horizontal: 4.0),
+                                    itemBuilder: (context, _) => const Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
