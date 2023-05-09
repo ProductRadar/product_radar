@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:product_radar/bin/api/api_lib.dart' as api;
 import 'package:product_radar/favorites.dart';
 import 'package:product_radar/login.dart';
+import 'package:product_radar/ratings.dart';
 import 'package:product_radar/sign_up.dart';
 
 
@@ -38,16 +39,23 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const Favorites()),
+                            builder: (context) => Favorites()),
                       );
                     },
                   ),
-                  const ListTile(
+                  ListTile(
                     leading: Icon(
                       Icons.star,
                       color: Colors.red,
                     ),
                     title: Text("Ratings"),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Ratings()),
+                      );
+                    },
                   ),
                   const ListTile(
                     leading: Icon(
