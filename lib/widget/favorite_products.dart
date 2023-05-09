@@ -12,8 +12,11 @@ class FavoriteProducts extends StatelessWidget {
     return FutureBuilder<List>(
       future: favorite.fetchFavorites(),
       builder: (context, snapshot) {
+        // if fetch favorites has data
         if (snapshot.hasData) {
+          // return a gridview builder
           return GridView.builder(
+              // with item count equal to fetch favorites data length
               itemCount: snapshot.data?.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -22,18 +25,26 @@ class FavoriteProducts extends StatelessWidget {
               ),
               itemBuilder: (context, index) {
                 return FutureBuilder(
-                    future: product.getProduct(snapshot.data?[index]["favorite"]["product_id"]),
+                    // get product using fetch favorites product id
+                    future: product.getProduct(
+                        snapshot.data?[index]["favorite"]["product_id"]),
                     builder: (context, product) {
+                      // if product has data
                       if (product.hasData) {
+                        // a gesture detector to react when card is tapped
                         return GestureDetector(
+                            // on tap navigate to product detail page
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => ProductDetail(id: snapshot.data?[index]["favorite"]["product_id"]),
+                                  builder: (context) => ProductDetail(
+                                      id: snapshot.data?[index]["favorite"]
+                                          ["product_id"]),
                                 ),
                               );
                             },
+                            // child card that holds product details
                             child: Card(
                               child: Container(
                                 height: 500,
@@ -47,6 +58,7 @@ class FavoriteProducts extends StatelessWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.stretch,
                                       children: [
+                                        // product image
                                         Expanded(
                                           child: Image.network(
                                             product.data?["product"]["image"],
@@ -65,6 +77,7 @@ class FavoriteProducts extends StatelessWidget {
                                             },
                                           ),
                                         ),
+                                        // product name
                                         Text(
                                           product.data?["product"]["name"],
                                           style: const TextStyle(
@@ -72,6 +85,7 @@ class FavoriteProducts extends StatelessWidget {
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
+                                        // Product rating
                                         RatingBarIndicator(
                                           rating: double.parse(product
                                               .data?["product"]["rating"]),
@@ -99,9 +113,9 @@ class FavoriteProducts extends StatelessWidget {
                     });
               });
         } else if (snapshot.hasError) {
+          // if fetch favorites returns error return error text
           return Text("${snapshot.error}");
         }
-
         // By default, show a loading spinner.
         return const CircularProgressIndicator();
       },
