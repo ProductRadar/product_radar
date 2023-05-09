@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:product_radar/bin/api/api_lib.dart' as api;
 
+import '../favorites.dart';
 import '../login.dart';
 import '../sign_up.dart';
 
@@ -27,12 +28,19 @@ class _CustomDrawerState extends State<CustomDrawer> {
               // If the user is logged in display this listview in drawer
               if (snapshot.data == true) {
                 return ListView(children: [
-                  const ListTile(
+                  ListTile(
                     leading: Icon(
                       Icons.favorite,
                       color: Colors.red,
                     ),
                     title: Text("Favorites"),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Favorites()),
+                      );
+                    },
                   ),
                   const ListTile(
                     leading: Icon(
