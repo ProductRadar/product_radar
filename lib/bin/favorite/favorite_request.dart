@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:product_radar/bin/api/api_lib.dart' as api;
 
-Future<List> fetchRatings() async {
+Future<List> fetchFavorites() async {
   final token = await api.getToken();
 
   final response = await http.get(

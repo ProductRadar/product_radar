@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:product_radar/bin/product/product_lib.dart' as product;
-import 'package:product_radar/bin/rating/rating_lib.dart' as rating;
+import 'package:product_radar/bin/favorite/favorite_lib.dart' as favorite;
 import 'package:product_radar/widget/product_details.dart';
 
 class FavoriteProducts extends StatelessWidget {
@@ -10,7 +10,7 @@ class FavoriteProducts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List>(
-      future: rating.fetchRatings(),
+      future: favorite.fetchFavorites(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return GridView.builder(
