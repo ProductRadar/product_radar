@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:product_radar/bin/api/api_lib.dart' as api;
+import 'package:product_radar/favorites.dart';
+import 'package:product_radar/login.dart';
+import 'package:product_radar/sign_up.dart';
 
-import '../login.dart';
-import '../sign_up.dart';
 
 class CustomDrawer extends StatefulWidget {
   @override
@@ -27,12 +28,19 @@ class _CustomDrawerState extends State<CustomDrawer> {
               // If the user is logged in display this listview in drawer
               if (snapshot.data == true) {
                 return ListView(children: [
-                  const ListTile(
+                  ListTile(
                     leading: Icon(
                       Icons.favorite,
                       color: Colors.red,
                     ),
                     title: Text("Favorites"),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Favorites()),
+                      );
+                    },
                   ),
                   const ListTile(
                     leading: Icon(
