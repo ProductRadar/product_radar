@@ -1,8 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:product_radar/bin/product/product_lib.dart' as product;
+import 'package:product_radar/widget/search.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({super.key});
+  CustomAppBar({super.key});
+
+  @override
+  Size get preferredSize => const Size.fromHeight(81);
+
+  // This controller will store the value of the search bar
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -31,25 +41,41 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       color: Colors.red,
                     ),
                     onPressed: () {
+                      FocusManager.instance.primaryFocus?.unfocus();
                       Scaffold.of(context).openDrawer();
                     },
                   ),
                   Expanded(
                     child: Container(
                       color: Colors.white,
-                      child: const TextField(
-                        decoration: InputDecoration.collapsed(
-                          hintText: "Search",
+                      child: TextField(
+                        autofocus: false,
+                        controller: _searchController,
+                        textInputAction: TextInputAction.search,
+                        onSubmitted: (value) {
+                          performSearch(context, _searchController.text);
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Search...',
+                          // Add a clear button to the search bar
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () => _searchController.clear(),
+                          ),
+                          // Add a search icon or button to the search bar
+                          prefixIcon: IconButton(
+                            icon: const Icon(Icons.search),
+                            onPressed: () async {
+                              // Perform the search here
+                              performSearch(context, _searchController.text);
+                            },
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(
-                      Icons.search,
-                      color: Colors.red,
-                    ),
-                    onPressed: () {},
                   ),
                 ]),
               ),
@@ -60,6 +86,17 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  @override
-  Size get preferredSize => const Size.fromHeight(70);
+  performSearch(BuildContext context, String searchText) {
+    product.basicSearch(searchText).then((response) {
+      // Navigates to search page to display the results
+      final asyncSnapshot =
+          AsyncSnapshot.withData(ConnectionState.done, response);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Search(snapshot: asyncSnapshot),
+        ),
+      );
+    });
+  }
 }
