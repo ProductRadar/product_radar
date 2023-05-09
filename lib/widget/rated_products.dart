@@ -12,11 +12,11 @@ class RatedProducts extends StatelessWidget {
     return FutureBuilder<List>(
       future: rating.fetchRatings(),
       builder: (context, snapshot) {
-        // if fetch favorites has data
+        // if fetch ratings has data
         if (snapshot.hasData) {
           // return a gridview builder
           return GridView.builder(
-              // with item count equal to fetch favorites data length
+              // with item count equal to fetch rating data length
               itemCount: snapshot.data?.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -25,7 +25,7 @@ class RatedProducts extends StatelessWidget {
               ),
               itemBuilder: (context, index) {
                 return FutureBuilder(
-                    // get product using fetch favorites product id
+                    // get product using fetch ratings product id
                     future: product.getProduct(
                         snapshot.data?[index]["rating"]["product_id"]),
                     builder: (context, product) {
