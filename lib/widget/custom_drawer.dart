@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:product_radar/bin/api/api_lib.dart' as api;
+import 'package:product_radar/favorites.dart';
+import 'package:product_radar/login.dart';
+import 'package:product_radar/sign_up.dart';
 
-import '../favorites.dart';
-import '../login.dart';
-import '../sign_up.dart';
 
 class CustomDrawer extends StatefulWidget {
   @override
