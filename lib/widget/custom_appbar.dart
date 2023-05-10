@@ -7,13 +7,14 @@ import 'package:product_radar/main.dart';
 import 'package:product_radar/widget/search.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  // Used to determine if the app bar is on the search page
+  /// Used to determine if the AppBar is on the search page
   final bool search;
 
   CustomAppBar({super.key, this.search = false});
 
+  // If on search page use a larger preferred size, to allow for a text widget
   @override
-  Size get preferredSize => const Size.fromHeight(81);
+  Size get preferredSize => Size.fromHeight(search == true ? 120 : 81);
 
   // This controller will store the value of the search bar
   final TextEditingController _searchController = TextEditingController();
@@ -100,6 +101,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
           ),
+          // If on search page display text widget
+          search == true
+              ? const Text(
+                  "Search results: ",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                  ),
+                )
+              : const Spacer(),
         ],
       ),
     );

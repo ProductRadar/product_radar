@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:product_radar/widget/product_card_grid.dart';
 
-import 'custom_appbar.dart';
-import 'custom_drawer.dart';
+import 'package:product_radar/widget/custom_appbar.dart';
+import 'package:product_radar/widget/custom_drawer.dart';
 
 class Search extends StatefulWidget {
   final AsyncSnapshot<List<dynamic>> snapshot;
@@ -19,7 +19,19 @@ class _SearchState extends State<Search> {
     return Scaffold(
       appBar: CustomAppBar(search: true),
       drawer: CustomDrawer(),
-      body: Center(child: ProductCardGrid(snapshot: widget.snapshot)),
+      body: Center(
+        child: ProductCardGrid(snapshot: widget.snapshot),
+      ),
     );
   }
 }
+/*
+
+            const Text(
+              "Search results: ",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+              ),
+            ),
+ */
