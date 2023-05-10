@@ -117,7 +117,10 @@ class ProductDetailState extends State<ProductDetail> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
               children: [
-                Rate(id: widget.id),
+                Rate(
+                  id: widget.id,
+                  rating: double.parse(data['product']['rating']),
+                ),
               ],
             ),
           ),

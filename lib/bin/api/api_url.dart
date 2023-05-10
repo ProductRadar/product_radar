@@ -1,20 +1,30 @@
-
 import 'package:flutter/foundation.dart';
+
+const ipAddress = "10.130.56.28";
 
 getApiBaseUrl() {
   // If debug mode is active, use the dev path.
   if (kDebugMode) {
-    return "http://10.130.56.28/duus/api";
+    return "http://$ipAddress/duus/api";
   } else {
-    return "http://10.130.56.28/api";
+    return "http://$ipAddress/api";
   }
 }
 
-getBaseUrl(){
+getBaseUrl() {
   // If debug mode is active, use the dev path.
   if (kDebugMode) {
-    return "http://10.130.56.28/joen";
+    return "http://$ipAddress/joen";
   } else {
-    return "http://10.130.56.28";
+    return "http://$ipAddress";
+  }
+}
+
+getApiBase() {
+  // If debug mode is active, use the dev path.
+  if (kDebugMode) {
+    return "/duus/api";
+  } else {
+    return "/api";
   }
 }
