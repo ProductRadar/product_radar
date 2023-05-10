@@ -17,7 +17,7 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: CustomAppBar(search: true),
       drawer: CustomDrawer(),
       body: Center(child: ProductCardGrid(snapshot: widget.snapshot)),
     );
