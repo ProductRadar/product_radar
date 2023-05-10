@@ -8,7 +8,7 @@ Future<List> fetchRatings() async {
   final token = await api.getToken();
 
   final response = await http.get(
-      Uri.parse('http://10.130.56.28/joen/api/getUserRatings'),
+      Uri.parse('${api.getApiBaseUrl()}/getUserRatings'),
       headers: {
         HttpHeaders.acceptHeader: 'application/json',
         HttpHeaders.authorizationHeader: 'Bearer $token'

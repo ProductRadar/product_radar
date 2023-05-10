@@ -8,7 +8,7 @@ Future<List> fetchFavorites() async {
   final token = await api.getToken();
 
   final response = await http.get(
-      Uri.parse('http://10.130.56.28/joen/api/getUserFavorites'),
+      Uri.parse('${api.getApiBaseUrl()}/getUserFavorites'),
       headers: {
         HttpHeaders.acceptHeader: 'application/json',
         HttpHeaders.authorizationHeader: 'Bearer $token'
