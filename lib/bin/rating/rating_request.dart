@@ -7,12 +7,11 @@ import 'package:product_radar/bin/api/api_lib.dart' as api;
 Future<List> fetchRatings() async {
   final token = await api.getToken();
 
-  final response = await http.get(
-      Uri.parse('http://10.130.56.28/joen/api/getUserRatings'),
-      headers: {
-        HttpHeaders.acceptHeader: 'application/json',
-        HttpHeaders.authorizationHeader: 'Bearer $token'
-      });
+  final response = await http
+      .get(Uri.parse('http://10.130.56.28/joen/api/getUserRatings'), headers: {
+    HttpHeaders.acceptHeader: 'application/json',
+    HttpHeaders.authorizationHeader: 'Bearer $token'
+  });
 
   // If the server did return a 200 OK response
   if (response.statusCode == 200) {
@@ -22,5 +21,36 @@ Future<List> fetchRatings() async {
     // If the server did not return a 200 OK response
     // then throw an exception
     throw Exception('Failed to load album');
+  }
+}
+
+Future<Map<String, dynamic>> updateRating(double rating, int productId) async {
+  final token = await api.getToken();
+
+  // Prepares the parameter to be send
+  final queryParams = {
+    'product_id': '$productId',
+    'rating': '$rating',
+  };
+
+  // Creates url, with parameter
+  final uri =
+      Uri.http(api.ipAddress, '${api.getApiBase()}/rating/1', queryParams);
+
+  // Sends the put request
+  final response = await http.put(uri, headers: {
+    HttpHeaders.acceptHeader: 'application/json',
+    HttpHeaders.authorizationHeader: 'Bearer $token'
+  });
+
+  // If the server did return a 200 OK response
+  if (response.statusCode == 200) {
+    // return response as json
+    return json.decode(response.body)["data"];
+  } else {
+    // If the server did not return a 200 OK response
+    // then throw an exception
+    throw Exception(
+        'Failed send rating. Status code: ${response.statusCode} Error: ${response.body}');
   }
 }
