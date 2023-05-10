@@ -7,11 +7,13 @@ import 'package:product_radar/bin/api/api_lib.dart' as api;
 Future<List> fetchRatings() async {
   final token = await api.getToken();
 
-  final response = await http
-      .get(Uri.parse('http://10.130.56.28/joen/api/getUserRatings'), headers: {
-    HttpHeaders.acceptHeader: 'application/json',
-    HttpHeaders.authorizationHeader: 'Bearer $token'
-  });
+
+  final response = await http.get(
+      Uri.parse('${api.getApiBaseUrl()}/getUserRatings'),
+      headers: {
+        HttpHeaders.acceptHeader: 'application/json',
+        HttpHeaders.authorizationHeader: 'Bearer $token'
+      });
 
   // If the server did return a 200 OK response
   if (response.statusCode == 200) {

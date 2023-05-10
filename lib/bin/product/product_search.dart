@@ -1,18 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:product_radar/bin/api/api_lib.dart' as api;
 
-Future<List> fetchFavorites() async {
-  final token = await api.getToken();
-
-  final response = await http.get(
-      Uri.parse('${api.getApiBaseUrl()}/getUserFavorites'),
-      headers: {
-        HttpHeaders.acceptHeader: 'application/json',
-        HttpHeaders.authorizationHeader: 'Bearer $token'
-      });
+Future<List> basicSearch(String searchTerm) async {
+  final response = await http.get(Uri.parse('${api.getApiBaseUrl()}/search/$searchTerm'));
 
   // If the server did return a 200 OK response
   if (response.statusCode == 200) {
@@ -21,6 +13,7 @@ Future<List> fetchFavorites() async {
   } else {
     // If the server did not return a 200 OK response
     // then throw an exception
-    throw Exception('Failed to load album');
+    throw Exception('Failed to load the products');
   }
 }
+
