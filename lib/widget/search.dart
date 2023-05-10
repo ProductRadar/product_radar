@@ -25,13 +25,3 @@ class _SearchState extends State<Search> {
     );
   }
 }
-/*
-
-            const Text(
-              "Search results: ",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
-              ),
-            ),
- */

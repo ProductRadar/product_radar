@@ -9,6 +9,7 @@ class ProductCardGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Creates a grid to hold the products
     return GridView.builder(
       itemCount: snapshot.data?.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -16,8 +17,10 @@ class ProductCardGrid extends StatelessWidget {
         crossAxisSpacing: 5.0,
         mainAxisSpacing: 5.0,
       ),
+      // Utilizes itemBuilder to ensure all the card are the same design/layout
       itemBuilder: (context, index) {
         return GestureDetector(
+          // Goes to the product description page.
           onTap: () {
             FocusManager.instance.primaryFocus?.unfocus();
             Navigator.push(
@@ -41,9 +44,11 @@ class ProductCardGrid extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Expanded(
+                        // The product image, with an error builder, to ensure there is always something displayed.
                         child: Image.network(
                           snapshot.data?[index]["product"]["image"],
                           fit: BoxFit.contain,
+                          // While loading the image display a circle progress indicator
                           loadingBuilder: (BuildContext context, Widget child,
                               ImageChunkEvent? loadingProgress) {
                             if (loadingProgress == null) {
@@ -71,6 +76,7 @@ class ProductCardGrid extends StatelessWidget {
                           },
                         ),
                       ),
+                      // The name of the product
                       Text(
                         snapshot.data?[index]["product"]["name"],
                         style: const TextStyle(
@@ -78,6 +84,7 @@ class ProductCardGrid extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      // The current average rating
                       RatingBarIndicator(
                         rating: double.parse(
                             snapshot.data?[index]["product"]["rating"]),
