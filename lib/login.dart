@@ -17,6 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
 
   String errorMessage = "";
+  bool autologin = false;
   bool loginFail = false;
   bool passwordEntered = false;
   bool usernameEntered = false;
@@ -90,9 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                                 controller: usernameController,
                                 decoration: InputDecoration(
                                   hintText: "Username",
-                                  errorText: loginFail
-                                      ? errorMessage
-                                      : null,
+                                  errorText: loginFail ? errorMessage : null,
                                   contentPadding: const EdgeInsets.symmetric(
                                       vertical: 0, horizontal: 10),
                                   enabledBorder: OutlineInputBorder(
@@ -147,6 +146,16 @@ class _LoginPageState extends State<LoginPage> {
                                 checkIfAllGood();
                               }),
                         ),
+                        CheckboxListTile(
+                          title: const Text("Stay logged in?"),
+                          value: autologin,
+                          onChanged: (value) {
+                            setState(() {
+                              autologin = value!;
+                            });
+                          },
+                          controlAffinity: ListTileControlAffinity.leading,
+                        ),
                         const SizedBox(
                           height: 30,
                         ),
@@ -189,8 +198,10 @@ class _LoginPageState extends State<LoginPage> {
                                     debugPrint("true");
                                     // Uses API library to store token
                                     api.storeToken(parsed['access_token']);
-                                    // Uses the API library to store the login info
-                                    api.storeLoginInfo(username, password);
+                                    // Uses the API library to store the login info if the user wants to automatically login
+                                    if(autologin){
+                                      api.storeLoginInfo(username, password);
+                                    }
 
                                     // unfocus the textfield
                                     FocusScope.of(context).unfocus();
@@ -272,5 +283,4 @@ class _LoginPageState extends State<LoginPage> {
     }
     debugPrint(allPassed.toString());
   }
-
 }

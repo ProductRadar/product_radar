@@ -68,6 +68,32 @@ Future<http.Response> login(final username, final password) {
   );
 }
 
+/// keep user logged in
+Future autoLogin() async {
+  // get login info
+  var loginInfo = await getLoginInfo();
+
+  // make login info into variables
+  var username = loginInfo.keys.first;
+  var password = loginInfo[username];
+
+  // Print variables
+  debugPrint(username);
+  debugPrint(password);
+
+  // login with variables
+  var response = await login(username, password);
+
+  // turn response into json and print it
+  var jsonResponse = json.decode(response.body);
+  debugPrint(jsonResponse["access_token"]);
+
+  // store bearer token
+
+  storeToken(jsonResponse["access_token"]);
+
+}
+
 /// Creates an account with given credentials
 Future<http.Response> createAccount(String username, String password) {
   var url = "";
