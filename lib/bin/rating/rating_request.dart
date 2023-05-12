@@ -37,7 +37,7 @@ Future<Map<String, dynamic>> updateRating(double rating, int productId) async {
 
   // Creates url, with parameter
   final uri =
-      Uri.http(api.ipAddress, '${api.getApiBase()}/rating/1', queryParams);
+      Uri.https(api.ipAddress, '${api.getApiBase()}/rating/1', queryParams);
 
   // Sends the put request
   final response = await http.put(uri, headers: {
