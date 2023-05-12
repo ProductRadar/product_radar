@@ -54,7 +54,7 @@ class MyHomeState extends State<MyHome> {
   late Timer timer;
 
   autoLoginCheck() async {
-    if (await api.isLoggedIn()) {
+    if (await api.isLoggedIn(autoLogin: true)) {
       await api.autoLogin();
     }
   }
