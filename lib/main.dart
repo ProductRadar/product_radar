@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:product_radar/widget/custom_appbar.dart';
@@ -6,6 +7,8 @@ import 'package:product_radar/widget/custom_drawer.dart';
 import 'package:product_radar/bin/product/product_lib.dart' as product;
 import 'package:product_radar/bin/api/api_lib.dart' as api;
 import 'package:product_radar/widget/product_card_grid.dart';
+
+import 'package:product_radar/bin/dev_http_overrides.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,6 +38,7 @@ class MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    HttpOverrides.global = DevHttpOverrides();
   }
 }
 
