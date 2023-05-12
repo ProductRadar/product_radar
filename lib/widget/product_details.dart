@@ -46,57 +46,61 @@ class ProductDetailState extends State<ProductDetail> {
             height: 8,
             width: 16,
           ),
-          Card(
-            margin: const EdgeInsets.all(4),
-            color: const Color(0xffe0e0e0),
-            shadowColor: const Color(0xff000000),
-            elevation: 1,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4.0),
-              side: const BorderSide(color: Color(0x4d9e9e9e), width: 1),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Image.network(
-                  data["product"]["image"],
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.red,
-                      alignment: Alignment.center,
-                      child: const Text(
-                        'Whoops!',
-                        style: TextStyle(fontSize: 30),
-                      ),
-                    );
-                  },
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        data['product']['name'],
-                        textAlign: TextAlign.start,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontStyle: FontStyle.normal,
-                          fontSize: 34,
-                          color: Color(0xff000000),
+          Expanded(
+            child: Card(
+              margin: const EdgeInsets.all(4),
+              color: const Color(0xffe0e0e0),
+              shadowColor: const Color(0xff000000),
+              elevation: 1,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4.0),
+                side: const BorderSide(color: Color(0x4d9e9e9e), width: 1),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                // crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    child: Image.network(
+                      data["product"]["image"],
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.red,
+                          alignment: Alignment.center,
+                          child: const Text(
+                            'Whoops!',
+                            style: TextStyle(fontSize: 30),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          data['product']['name'],
+                          textAlign: TextAlign.start,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 34,
+                            color: Color(0xff000000),
+                          ),
                         ),
                       ),
-                    ),
-                    Favorite(id: widget.id),
-                  ],
-                ),
-              ],
+                      Favorite(id: widget.id),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(
