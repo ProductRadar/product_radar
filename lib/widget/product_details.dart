@@ -58,7 +58,6 @@ class ProductDetailState extends State<ProductDetail> {
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
-                // crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Expanded(
@@ -78,11 +77,12 @@ class ProductDetailState extends State<ProductDetail> {
                     ),
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Flexible(
+                        flex: 2,
                         child: Text(
                           data['product']['name'],
                           textAlign: TextAlign.start,
@@ -91,7 +91,7 @@ class ProductDetailState extends State<ProductDetail> {
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontStyle: FontStyle.normal,
-                            fontSize: 34,
+                            fontSize: 24,
                             color: Color(0xff000000),
                           ),
                         ),
