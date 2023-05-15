@@ -4,6 +4,7 @@ import 'package:product_radar/favorites.dart';
 import 'package:product_radar/login.dart';
 import 'package:product_radar/ratings.dart';
 import 'package:product_radar/sign_up.dart';
+import 'package:product_radar/about.dart';
 
 
 class CustomDrawer extends StatefulWidget {
@@ -57,12 +58,19 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       );
                     },
                   ),
-                  const ListTile(
+                  ListTile(
                     leading: Icon(
                       Icons.info,
                       color: Colors.red,
                     ),
                     title: Text("About Us"),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AboutPage()),
+                      );
+                    },
                   ),
                   ListTile(
                     leading: const Icon(
@@ -82,12 +90,19 @@ class _CustomDrawerState extends State<CustomDrawer> {
               {
                 return ListView(
                   children: [
-                    const ListTile(
+                    ListTile(
                       leading: Icon(
                         Icons.info,
                         color: Colors.red,
                       ),
                       title: Text("About Us"),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AboutPage()),
+                        );
+                      },
                     ),
                     ListTile(
                       leading: const Icon(
