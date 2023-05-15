@@ -38,6 +38,7 @@ class MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    WidgetsFlutterBinding.ensureInitialized();
     HttpOverrides.global = DevHttpOverrides();
   }
 }
