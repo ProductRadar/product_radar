@@ -18,9 +18,9 @@ class _AboutPageState extends State<AboutPage> {
     var mailUrl = Uri(
         scheme: 'mailto',
         path: email,
-        queryParameters: {"subject": "idk", "body": "idk"});
+        query: "subject=Question&body=To Product Radar");
     try {
-      await launchUrl(mailUrl as Uri);
+      await launchUrl(mailUrl);
     } catch (e) {
       await Clipboard.setData(ClipboardData(text: email)).then((_) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -58,26 +58,24 @@ class _AboutPageState extends State<AboutPage> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: Flexible(
-                child: RichText(
+              child: RichText(
                     text: TextSpan(
-                  style: TextStyle(color: Colors.black),
+                  style: const TextStyle(color: Colors.black),
                   children: <TextSpan>[
                     const TextSpan(
                         text:
                             'If you have any questions or would like to report a bug please mail us at '),
                     TextSpan(
-                      text: 'idk@idk.idk',
-                      style: TextStyle(color: Colors.blue),
+                      text: 'support@product_radar.com',
+                      style: const TextStyle(color: Colors.blue),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          email = "idk@idk.idk";
+                          email = "support@product_radar.com";
                           launchMailClient();
                         },
                     ),
                   ],
                 )),
-              ),
             ),
           ],
         ),
