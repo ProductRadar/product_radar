@@ -38,6 +38,7 @@ class MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    WidgetsFlutterBinding.ensureInitialized();
     HttpOverrides.global = DevHttpOverrides();
   }
 }
@@ -54,7 +55,7 @@ class MyHomeState extends State<MyHome> {
   late Timer timer;
 
   autoLoginCheck() async {
-    if (await api.isLoggedIn()) {
+    if (await api.isLoggedIn(autoLogin: true)) {
       await api.autoLogin();
     }
   }

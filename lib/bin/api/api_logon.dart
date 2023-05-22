@@ -34,8 +34,15 @@ Future<Map<String, String>> getLoginInfo() async {
 }
 
 /// Check if the user is logged in
-Future<bool> isLoggedIn() async {
+Future<bool> isLoggedIn({bool autoLogin = false}) async {
   String? value = await storage.read(key: "token");
+
+  // If it is used to determine auto login, check for username and password
+  if (autoLogin) {
+    value = await storage.read(key: "username");
+    value = await storage.read(key: "password");
+  }
+
   if (value != null) {
     debugPrint("isLoggedIn Function: true");
     return true;
@@ -89,9 +96,7 @@ Future autoLogin() async {
   debugPrint(jsonResponse["access_token"]);
 
   // store bearer token
-
   storeToken(jsonResponse["access_token"]);
-
 }
 
 /// Creates an account with given credentials

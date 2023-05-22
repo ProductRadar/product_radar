@@ -221,6 +221,19 @@ class _LoginPageState extends State<LoginPage> {
                                     // unfocus the textfield
                                     FocusScope.of(context).unfocus();
                                   }
+                                }).onError((error, stackTrace) {
+
+                                  // Clear password
+                                  passwordController.clear();
+
+                                  // make login fail true;
+                                  loginFail = true;
+
+                                  // error message
+                                  errorMessage = "Login information is invalid";
+
+                                  // unfocus the textfield
+                                  FocusScope.of(context).unfocus();
                                 });
                               }
                             : null,

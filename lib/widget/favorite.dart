@@ -41,7 +41,7 @@ class _FavoriteState extends State<Favorite> {
             }),
           );
         } else {
-          return const Spacer();
+          return const SizedBox.shrink();
         }
       }),
     );

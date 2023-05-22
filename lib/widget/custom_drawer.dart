@@ -6,7 +6,6 @@ import 'package:product_radar/ratings.dart';
 import 'package:product_radar/sign_up.dart';
 import 'package:product_radar/about.dart';
 
-
 class CustomDrawer extends StatefulWidget {
   @override
   _CustomDrawerState createState() => _CustomDrawerState();
@@ -29,35 +28,36 @@ class _CustomDrawerState extends State<CustomDrawer> {
             if (snapshot.hasData) {
               // If the user is logged in display this listview in drawer
               if (snapshot.data == true) {
-                return ListView(children: [
-                  ListTile(
-                    leading: Icon(
-                      Icons.favorite,
-                      color: Colors.red,
+                return ListView(
+                  children: [
+                    ListTile(
+                      leading: const Icon(
+                        Icons.favorite,
+                        color: Colors.red,
+                      ),
+                      title: const Text("Favorites"),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Favorites()),
+                        );
+                      },
                     ),
-                    title: Text("Favorites"),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Favorites()),
-                      );
-                    },
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.star,
-                      color: Colors.red,
+                    ListTile(
+                      leading: const Icon(
+                        Icons.star,
+                        color: Colors.red,
+                      ),
+                      title: const Text("Ratings"),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Ratings()),
+                        );
+                      },
                     ),
-                    title: Text("Ratings"),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Ratings()),
-                      );
-                    },
-                  ),
                   ListTile(
                     leading: Icon(
                       Icons.info,
@@ -72,20 +72,21 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       );
                     },
                   ),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.logout,
-                      color: Colors.red,
+                    ListTile(
+                      leading: const Icon(
+                        Icons.logout,
+                        color: Colors.red,
+                      ),
+                      title: const Text("Sign Out"),
+                      onTap: () async {
+                        // Close Drawer
+                        Scaffold.of(context).closeDrawer();
+                        // Call api log out function
+                        await api.logOut();
+                      },
                     ),
-                    title: const Text("Sign Out"),
-                    onTap: () async {
-                      // Close Drawer
-                      Scaffold.of(context).closeDrawer();
-                      // Call api log out function
-                      await api.logOut();
-                    },
-                  ),
-                ]);
+                  ],
+                );
               } else // Else when not logged in, display this listview in drawer
               {
                 return ListView(
