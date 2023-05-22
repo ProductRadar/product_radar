@@ -44,10 +44,14 @@ Future<bool> isLoggedIn({bool autoLogin = false}) async {
   }
 
   if (value != null) {
-    debugPrint("isLoggedIn Function: true");
+    if (kDebugMode) {
+      debugPrint("isLoggedIn Function: true");
+    }
     return true;
   }
-  debugPrint("isLoggedIn Function: false");
+  if (kDebugMode) {
+    debugPrint("isLoggedIn Function: false");
+  }
   return false;
 }
 
@@ -85,15 +89,20 @@ Future autoLogin() async {
   var password = loginInfo[username];
 
   // Print variables
-  debugPrint(username);
-  debugPrint(password);
+  if (kDebugMode) {
+    debugPrint(username);
+    debugPrint(password);
+  }
 
   // login with variables
   var response = await login(username, password);
 
   // turn response into json and print it
   var jsonResponse = json.decode(response.body);
-  debugPrint(jsonResponse["access_token"]);
+
+  if (kDebugMode) {
+    debugPrint(jsonResponse["access_token"]);
+  }
 
   // store bearer token
   storeToken(jsonResponse["access_token"]);

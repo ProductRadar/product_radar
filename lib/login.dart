@@ -187,19 +187,22 @@ class _LoginPageState extends State<LoginPage> {
                                   // Maps the JSON data
                                   Map<String, dynamic> parsed =
                                       jsonDecode(response.body);
-
-                                  debugPrint(response.body);
+                                  if (kDebugMode) {
+                                    debugPrint(response.body);
+                                  }
 
                                   // If the parsed data has the access token key
                                   if (parsed['access_token'] != null) {
                                     // make login fail false
                                     loginFail = false;
 
-                                    debugPrint("true");
+                                    if (kDebugMode) {
+                                      debugPrint("true");
+                                    }
                                     // Uses API library to store token
                                     api.storeToken(parsed['access_token']);
                                     // Uses the API library to store the login info if the user wants to automatically login
-                                    if(autologin){
+                                    if (autologin) {
                                       api.storeLoginInfo(username, password);
                                     }
 
@@ -222,7 +225,6 @@ class _LoginPageState extends State<LoginPage> {
                                     FocusScope.of(context).unfocus();
                                   }
                                 }).onError((error, stackTrace) {
-
                                   // Clear password
                                   passwordController.clear();
 
@@ -294,6 +296,8 @@ class _LoginPageState extends State<LoginPage> {
         allPassed = false;
       });
     }
-    debugPrint(allPassed.toString());
+    if (kDebugMode) {
+      debugPrint(allPassed.toString());
+    }
   }
 }
