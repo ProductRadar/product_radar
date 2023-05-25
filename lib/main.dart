@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:product_radar/widget/custom_appbar.dart';
 import 'package:product_radar/widget/custom_drawer.dart';
 import 'package:product_radar/bin/product/product_lib.dart' as product;
@@ -11,7 +12,12 @@ import 'package:product_radar/widget/product_card_grid.dart';
 import 'package:product_radar/bin/dev_http_overrides.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  HttpOverrides.global = DevHttpOverrides();
+
+  // Ensures the device is only in portrait mode
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((value) => runApp(const MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -33,13 +39,6 @@ class MyAppState extends State<MyApp> {
       ),
       home: const MyHome(),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsFlutterBinding.ensureInitialized();
-    HttpOverrides.global = DevHttpOverrides();
   }
 }
 
